@@ -11,8 +11,8 @@ router.get('/', async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'No URL provided' });
   }
 
-  // if vtt file, return it directly
-  if (url.endsWith('.vtt')) {
+  // if vtt or key file, return it directly
+  if (url.endsWith('.vtt') || url.endsWith('.key')) {
     try {
       const response = await axios({
         method: 'get',
@@ -21,7 +21,7 @@ router.get('/', async (req: Request, res: Response) => {
         headers: ref ? { Referer: ref as string } : {},
       });
 
-      res.setHeader('Content-Type', 'text/vtt');
+      res.setHeader('Content-Type', url.endsWith('.vtt') ? 'text/vtt' : 'application/octet-stream');
       res.setHeader('Content-Disposition', 'inline');
       res.send(response.data);
     } catch (error) {
